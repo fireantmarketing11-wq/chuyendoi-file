@@ -1,6 +1,10 @@
+# Requirements for full option (core + optional helpers)
 Flask==2.3.4
 Pillow==10.1.0
 reportlab==4.0.9
 python-docx==0.8.11
 PyPDF2==3.0.1
 pytest==7.4.2
+cairosvg==2.6.0
+psd-tools==1.9.8
+pillow-heif==0.11.0
