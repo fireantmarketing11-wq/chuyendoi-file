@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8">
+    <title>Ứng dụng Chuyển Đổi File</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Chuyển Đổi File — Ứng Dụng Local</h1>
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class="messages">
+            {% for m in messages %}
+              <li>{{ m }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+
+      <form method="post" enctype="multipart/form-data">
+        <label>Chọn file để tải lên (ảnh, văn bản .txt/.md, pdf, video):</label>
+        <input type="file" name="file" required>
+
+        <label>Loại file / hành động:</label>
+        <select name="category" id="category" onchange="onCategoryChange()">
+          <option value="anh">Ảnh (convert ảnh)</option>
+          <option value="vanban">Văn bản (txt/md → PDF/DOCX)</option>
+          <option value="pdf">PDF (PDF → TXT)</option>
+          <option value="video">Video (cần ffmpeg để convert)</option>
+        </select>
+
+        <div id="format-block">
+          <label>Định dạng đích:</label>
+          <select name="target_format" id="target_format">
+            <!-- Mặc định cho ảnh -->
+            <option value="png">png</option>
+            <option value="jpg">jpg</option>
+            <option value="webp">webp</option>
+          </select>
+        </div>
+
+        <div id="size-block">
+          <label>Tùy chọn kích thước (ảnh):</label>
+          <input type="number" name="width" placeholder="Chiều rộng (px, để trống nếu không đổi)">
+          <input type="number" name="height" placeholder="Chiều cao (px, để trống nếu không đổi)">
+        </div>
+
+        <div class="note">
+          {% if not ffmpeg_available %}
+            <p><strong>Lưu ý:</strong> ffmpeg không tìm thấy — chức năng chuyển đổi video sẽ không hoạt động cho đến khi cài ffmpeg.</p>
+          {% endif %}
+        </div>
+
+        <button type="submit">Chuyển đổi</button>
+      </form>
+
+      <hr>
+      <h3>Hướng dẫn ngắn</h3>
+      <ul>
+        <li>Tải lên file → chọn loại → bấm Chuyển đổi → file mới sẽ được tải về.</li>
+        <li>Với văn bản, ứng dụng giả định file mã hóa UTF-8 (nếu không, sẽ thử Latin-1).</li>
+        <li>Video: cài ffmpeg để hỗ trợ chuyển định dạng.</li>
+      </ul>
+    </div>
+
+    <script>
+      function onCategoryChange(){
+        const c = document.getElementById("category").value;
+        const format = document.getElementById("target_format");
+        const sizeBlock = document.getElementById("size-block");
+        if(c === "anh"){
+          format.innerHTML = '<option value="png">png</option><option value="jpg">jpg</option><option value="webp">webp</option>';
+          sizeBlock.style.display = 'block';
+        } else if(c === "vanban"){
+          format.innerHTML = '<option value="pdf">pdf</option><option value="docx">docx</option>';
+          sizeBlock.style.display = 'none';
+        } else if(c === "pdf"){
+          format.innerHTML = '<option value="txt">txt</option>';
+          sizeBlock.style.display = 'none';
+        } else if(c === "video"){
+          format.innerHTML = '<option value="mp4">mp4</option><option value="webm">webm</option><option value="gif">gif</option>';
+          sizeBlock.style.display = 'none';
+        }
+      }
+      // khởi tạo
+      onCategoryChange();
+    </script>
+  </body>
+</html>

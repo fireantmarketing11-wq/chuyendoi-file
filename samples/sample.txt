@@ -1,0 +1,3 @@
+Đây là file văn bản ví dụ.
+Bạn có thể dùng file này để thử chức năng chuyển sang PDF hoặc DOCX.
+Dòng này chứng minh việc xuống dòng.
